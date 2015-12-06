@@ -1,0 +1,73 @@
+/* The MIT License (MIT)
+ *
+ * Copyright (c) 2015 Niclas Rosenvik
+ * Copyright (C) 2003 - 2015 David Nichols
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * The Doxygen comments below are based on the doxygen comments in
+ * ql_compression.qpp in the qore distribution.
+ *
+ */
+#include <config.h>
+#include <ql_lz4.h>
+#include <qore_lz4frame.h>
+
+
+/** @defgroup lz4_compression_functions LZ4 Compression Functions
+ */
+//@{
+//! Compresses the given data with the <a href="http://www.lz4.org/">lz4 algorithm</a> and returns the compressed data in an <a href="http://cyan4973.github.io/lz4/lz4_Frame_format.html">lz4 frame</a> as a binary
+/** @param bin the data to compress
+    @param level the compression level, must be a value between 0 and 16 inclusive, 0 = the least compression (and is the fastest), 16 = the most compression (slowest).  An invalid option passed to this argument will result in a \c LZ4-LEVEL-ERROR exception being raised.
+
+    @return the compressed data as a binary object
+
+    @par Example:
+    @code
+my binary $lz4frame = lz4frame_compress($data);
+    @endcode
+
+    @throw LZ4-LEVEL-ERROR level must be between 0 - 16
+    @throw LZ4-COMPRESS-ERROR the lz4 library returned an error during processing
+*/
+binary lz4frame_compress(binary bin, int level) {
+  if (level < 0 || level > 16) {
+      return xsink->raiseException("LZ4-LEVEL-ERROR", "level must be between 0 - 16 (value passed: %d)", level);
+  }
+  return qore_lz4frame_compress(bin->getPtr(), bin->size(), level, xsink);
+}
+
+//! Decompresses the given lz4frame with the <a href="http://www.lz4.org/">lz4 algorithm</a> and returns the decompressed data as a binary
+/** @param bin the data to compress
+
+    @return the decompressed data as a binary object
+
+    @par Example:
+    @code
+my binary $data = lz4frame_decompress($lz4frame);
+    @endcode
+
+    @throw LZ4-DECOMPRESS-ERROR the lz4 library returned an error during processing
+*/
+binary lz4frame_decompress(binary bin) {
+  return qore_lz4frame_decompress(bin->getPtr(), bin->size(), xsink);
+}
+//@}
+
