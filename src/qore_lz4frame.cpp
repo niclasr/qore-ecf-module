@@ -24,6 +24,8 @@
 #include <config.h>
 #include <lz4frame.h>
 #include <qore/Qore.h>
+#include <stdlib.h>
+#include <string.h>
 
 BinaryNode*
 qore_lz4frame_compress(const void* ptr, size_t len, int level, ExceptionSink* xsink)
