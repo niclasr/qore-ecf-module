@@ -1,13 +1,14 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.3.0)
 
 project(qore-lz4-module VERSION 0.0.1)
 
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
 
-find_package(Qore REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(LZ4 REQUIRED liblz4>=131)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
+find_package(Qore 0.8.12 REQUIRED)
+find_package(LZ4F 100 REQUIRED)
 
 check_cxx_compiler_flag(-fvisibility=hidden HAVE_GCC_VISIBILITY)
 
@@ -20,9 +21,17 @@ set(module_name "lz4")
 qore_wrap_qpp(QPP_CPP_SRC ${QPP_SRC})
 
 add_library(${module_name} SHARED ${CPP_SRC} ${QPP_CPP_SRC})
-target_include_directories(${module_name} PUBLIC ${CMAKE_SOURCE_DIR}/src ${LZ4_INCLUDE_DIRS})
+target_include_directories(${module_name} PUBLIC ${CMAKE_SOURCE_DIR}/src ${LZ4F_INCLUDE_DIR})
 
-qore_binary_module(${module_name} "${PROJECT_VERSION}" ${LZ4_LDFLAGS})
+# qore version 0.8.13 and above requires c++11
+if ((Qore_VERSION VERSION_GREATER "0.8.13") OR (Qore_VERSION VERSION_EQUAL "0.8.13"))
+set_target_properties(${module_name} PROPERTIES
+                      CXX_STANDARD 11
+                      CXX_STANDARD_REQUIRED ON
+                      CXX_EXTENSIONS OFF)
+endif()
+
+qore_binary_module(${module_name} "${PROJECT_VERSION}" ${LZ4_LIB})
 
 install(FILES LICENSE DESTINATION ${CMAKE_INSTALL_FULL_DOCDIR})
 
