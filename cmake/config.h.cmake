@@ -3,6 +3,4 @@
 
 #cmakedefine HAVE_GCC_VISIBILITY
 
-#define PROJECT_VERSION "@PROJECT_VERSION@"
-
 #endif

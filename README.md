@@ -1,2 +1,2 @@
-# qore-lz4-module
-qore module to handle lz4 frames
+# qore-ecf-module
+qore module with extra compression functions 

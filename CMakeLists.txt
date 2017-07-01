@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.3.0)
 
-project(qore-lz4-module VERSION 0.0.1)
+project(qore-ecf-module VERSION 0.0.1)
 
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
@@ -14,9 +14,9 @@ check_cxx_compiler_flag(-fvisibility=hidden HAVE_GCC_VISIBILITY)
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/config.h.cmake config.h)
 
-set(CPP_SRC src/qore_lz4frame.cpp src/lz4_module.cpp)
-set(QPP_SRC src/ql_lz4.qpp)
-set(module_name "lz4")
+set(CPP_SRC src/ecf_module.cpp src/qore_lz4frame.cpp)
+set(QPP_SRC src/ql_ecf.qpp)
+set(module_name "ecf")
 
 qore_wrap_qpp(QPP_CPP_SRC ${QPP_SRC})
 
