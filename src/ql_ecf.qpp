@@ -28,6 +28,7 @@
 #include <config.h>
 #include <ql_ecf.h>
 #include <qore_lz4frame.h>
+#include <qore_snappy.h>
 
 
 /** @defgroup ecf_compression_functions Extra Compression Functions
@@ -69,5 +70,38 @@ my binary $data = lz4frame_decompress($lz4frame);
 binary lz4frame_decompress(binary bin) {
   return qore_lz4frame_decompress(bin->getPtr(), bin->size(), xsink);
 }
+
+//! Compresses the given data with the <a href="http://google.github.io/snappy/">snappy algorithm</a> and returns the compressed data
+/** @param bin the data to compress
+
+    @return the compressed data as a binary object
+
+    @par Example:
+    @code
+my binary $snappydata = snappy_compress($data);
+    @endcode
+
+*/
+binary snappy_compress(binary bin) {
+  return qore_snappy_function(bin->getPtr(), bin->size(),  xsink, true);
+}
+
+//! Decompresses the given snappy compressed data  with the <a href="http://google.github.io/snappy">snappy algorithm</a> and returns the decompressed data as a binary
+/** @param bin the data to compress
+
+    @return the decompressed data as a binary object
+
+    @par Example:
+    @code
+my binary $data = snappy_decompress($snappydata);
+    @endcode
+
+    @throw SNAPPY-DECOMPRESS-ERROR the data was corrupt and could not be decompressed
+
+*/
+binary snappy_decompress(binary bin) {
+  return qore_snappy_function(bin->getPtr(), bin->size(), xsink, false);
+}
+
 //@}
 

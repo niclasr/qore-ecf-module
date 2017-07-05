@@ -1,6 +1,6 @@
 /* The MIT License (MIT)
  *
- * Copyright (c) 2015 - 2017 Niclas Rosenvik <youremailsarecrap@gmail.com>
+ * Copyright (c) 2017 Niclas Rosenvik <youremailsarecrap@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,32 +23,30 @@
 
 #include <config.h>
 #include <qore/Qore.h>
+#include <snappy.h>
+#include <snappy-sinksource.h>
 
-#include "ecf_module.h"
-#include "ql_ecf.h"
+#include "binarynode_sink.h"
 
-DLLEXPORT char qore_module_name[] = "ecf";
-DLLEXPORT char qore_module_version[] = PACKAGE_VERSION;
-DLLEXPORT char qore_module_description[] = "extra compression functions module";
-DLLEXPORT char qore_module_author[] = "Niclas Rosenvik";
-DLLEXPORT char qore_module_url[] = "http://github.com/niclasr/qore-ecf-module";
-DLLEXPORT int qore_module_api_major = QORE_MODULE_API_MAJOR;
-DLLEXPORT int qore_module_api_minor = QORE_MODULE_API_MINOR;
-DLLEXPORT qore_license_t qore_module_license = QL_MIT;
-DLLEXPORT qore_module_init_t qore_module_init = ecf_module_init;
-DLLEXPORT qore_module_ns_init_t qore_module_ns_init = ecf_module_ns_init;
-DLLEXPORT qore_module_delete_t qore_module_delete = ecf_module_delete;
-
-
-QoreNamespace ECFNS("ecf");
-
-QoreStringNode * ecf_module_init() {
-  init_ecf_functions(ECFNS);
-  return 0;
+BinaryNode*
+qore_snappy_function(const void* ptr, size_t len, ExceptionSink* xsink, bool compress)
+{
+  const char* cptr = (char*)ptr;
+  snappy::ByteArraySource local_source(cptr, len); 
+  ReferenceHolder<BinaryNode> rbn(new BinaryNode(), xsink);
+  binarynode_sink local_sink(rbn.getRef());
+ 
+  size_t snappy_bytes;
+  bool snappy_success;
+  if (compress) {
+    snappy_bytes = snappy::Compress(&local_source, &local_sink);
+  }
+  else {
+    if (!snappy::Uncompress(&local_source, &local_sink)) {
+      xsink->raiseException("SNAPPY-UNCOMPRESS-ERROR", "");
+      return 0;
+    }
+  }
+  
+  return rbn.release();
 }
-
-void ecf_module_ns_init(QoreNamespace *rns, QoreNamespace *qns) {
-  qns->addNamespace(ECFNS.copy());
-}
-
-void ecf_module_delete() {}
