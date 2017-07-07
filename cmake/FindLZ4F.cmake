@@ -1,6 +1,5 @@
-
-
-# Copyright 2017 Niclas Rosenvik 
+#
+# Copyright 2017 Niclas Rosenvik <youremailsarecrap@gmail.com>
 #
 # Permission to use, copy, modify, and/or distribute this file for
 # any purpose with or without fee is hereby granted, provided that the
@@ -24,7 +23,7 @@ find_path(LZ4F_INCLUDE_DIR NAMES lz4frame.h)
 find_library(LZ4_LIB NAMES lz4 liblz4)
 
 if (LZ4F_INCLUDE_DIR)
-    file(READ /usr/pkg/include/lz4frame.h LZ4FRAME_H_CONTENTS)
+    file(READ ${LZ4F_INCLUDE_DIR}/lz4frame.h LZ4FRAME_H_CONTENTS)
     string(REGEX MATCH "#define LZ4F_VERSION [0-9]+" LZ4F_VERSION "${LZ4FRAME_H_CONTENTS}")
     string(REGEX REPLACE "#define LZ4F_VERSION ([0-9]+)" "\\1" LZ4F_VERSION "${LZ4F_VERSION}")
 endif (LZ4F_INCLUDE_DIR)
