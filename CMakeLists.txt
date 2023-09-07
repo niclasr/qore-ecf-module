@@ -29,8 +29,7 @@ qore_wrap_qpp_value(QPP_CPP_SRC ${QPP_SRC})
 
 add_library(${module_name} SHARED ${CPP_SRC} ${QPP_CPP_SRC})
 target_include_directories(${module_name} PUBLIC
-                           ${CMAKE_SOURCE_DIR}/src 
-                           ${LZ4F_INCLUDE_DIR})
+                           ${CMAKE_SOURCE_DIR}/src)
 
 # qore requires c++11
 set_target_properties(${module_name} PROPERTIES
@@ -40,7 +39,7 @@ set_target_properties(${module_name} PROPERTIES
 
 qore_binary_module(${module_name}
                    "${PROJECT_VERSION}"
-                   ${LZ4_LIB} 
+                   LZ4F::LZ4F
                    Snappy::snappy)
 
 install(FILES LICENSE DESTINATION ${CMAKE_INSTALL_FULL_DOCDIR})

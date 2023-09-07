@@ -1,5 +1,5 @@
 #
-# Copyright 2017 Niclas Rosenvik <youremailsarecrap@gmail.com>
+# Copyright 2017 - 2023 Niclas Rosenvik <youremailsarecrap@gmail.com>
 #
 # Permission to use, copy, modify, and/or distribute this file for
 # any purpose with or without fee is hereby granted, provided that the
@@ -27,6 +27,13 @@ if (LZ4F_INCLUDE_DIR)
     string(REGEX MATCH "#define LZ4F_VERSION [0-9]+" LZ4F_VERSION "${LZ4FRAME_H_CONTENTS}")
     string(REGEX REPLACE "#define LZ4F_VERSION ([0-9]+)" "\\1" LZ4F_VERSION "${LZ4F_VERSION}")
 endif (LZ4F_INCLUDE_DIR)
+
+if (LZ4F_INCLUDE_DIR AND LZ4_LIB)
+    add_library(LZ4F::LZ4F UNKNOWN IMPORTED)
+    set_target_properties(LZ4F::LZ4F PROPERTIES
+                          INTERFACE_INCLUDE_DIRECTORIES ${LZ4F_INCLUDE_DIR}
+                          IMPORTED_LOCATION ${LZ4_LIB})
+endif (LZ4F_INCLUDE_DIR AND LZ4_LIB)
 
 find_package_handle_standard_args(LZ4F REQUIRED_VARS LZ4F_INCLUDE_DIR LZ4_LIB LZ4F_VERSION VERSION_VAR LZ4F_VERSION)
 
