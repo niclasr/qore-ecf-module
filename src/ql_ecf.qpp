@@ -33,7 +33,7 @@
 
 /** @defgroup ecf_compression_functions Extra Compression Functions
  */
-//@{
+///@{
 //! Compresses the given data with the <a href="http://www.lz4.org/">lz4 algorithm</a> and returns the compressed data in an <a href="http://cyan4973.github.io/lz4/lz4_Frame_format.html">lz4 frame</a> as a binary
 /** @param bin the data to compress
     @param level the compression level, must be a value between 0 and 16 inclusive, 0 = the least compression (and is the fastest), 16 = the most compression (slowest).  An invalid option passed to this argument will result in a \c LZ4-LEVEL-ERROR exception being raised.
@@ -103,5 +103,5 @@ binary snappy_decompress(binary bin) {
   return qore_snappy_function(bin->getPtr(), bin->size(), xsink, false);
 }
 
-//@}
+///@}
 
